@@ -3,6 +3,10 @@
 #include <string.h>
 #include <elf.h>
 
+#ifdef __illumos__
+#include "illumos.h"
+#endif
+
 #define VERSION "v1.0"
 
 #define SWAP32(v) ((((v) & 0x000000ff) << 24) | \
@@ -39,7 +43,7 @@
 */
 typedef int (*func_ptr)(void);
 
-int PAGESIZE; // Set at runtime with getpagesize() in melkor.c
+extern int PAGESIZE; // Set at runtime with getpagesize() in melkor.c
 
 #ifndef PT_GNU_STACK
 #define PT_GNU_STACK 0x6474e551 // Indicates executable stack

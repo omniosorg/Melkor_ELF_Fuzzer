@@ -31,9 +31,6 @@ melkor: $(MODULES)
 templ:
 	$(CC) $(CFLAGS) $(TEMPLFOO) -c -o $(TEMPL_SRC)/foo.o
 	$(CC) $(CFLAGS) $(TEMPLFOO) $(TEMPLLIBFOO) -o $(TEMPL_SRC)/foo
-	$(CC) $(CFLAGS) $(TEMPLFOO) $(TEMPLLIBFOO) -Wl,-z,relro,-z,now -o $(TEMPL_SRC)/foo_full_relro
-	$(CC) $(CFLAGS) $(TEMPLFOO) $(TEMPLLIBFOO) -fstack-protector -z execstack -o $(TEMPL_SRC)/foo_stackprotector_execstack
-	$(CC) $(CFLAGS) $(TEMPLFOO) $(TEMPLLIBFOO) -static -o $(TEMPL_SRC)/foo_static
 	$(CC) $(CFLAGS) $(TEMPLLIBFOO) -c -fPIC -o $(TEMPL_SRC)/libfoo.o
 	$(CC) $(CFLAGS) $(TEMPL_SRC)/libfoo.o -shared -o $(TEMPL_SRC)/libfoo.so
 	$(CC) $(CFLAGS) $(TEMPLFOOLIBFOO) -L $(TEMPL_SRC) -lfoo -o $(TEMPL_SRC)/foo_libfoo
@@ -49,8 +46,10 @@ envtools:
 install:
 	install $(OUTPUT) $(INSTALLPATH)
 clean:
-	find  $(SRC) -type f -executable -exec rm {} \;
-	find  $(TEMPL_SRC) -type f -executable -exec rm {} \;
+	# access(2) is too accomodating on illumos, use -perm /111 instead of
+	# -executable
+	gfind  $(SRC) -type f -perm /111 -exec rm {} \;
+	gfind  $(TEMPL_SRC) -type f -perm /111 -exec rm {} \;
 	rm -f $(TEMPL_SRC)/*.o
 	rm -f $(TEMPL_SRC)/*.so
 	rm -f $(SRC)/*.o

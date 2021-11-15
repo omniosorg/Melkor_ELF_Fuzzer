@@ -105,7 +105,7 @@ Elf_Half getElf_Half(void)
 	int r = rand();
 
 	if(r % 5 == 0) // 20% chance
-		h = (Elf_Half) short_l33t[rand() % (sizeof(short_l33t) / sizeof(int))];
+		h = (Elf_Half) short_l33t[rand() % (sizeof(short_l33t) / (sizeof(int)))];
 	else if(r % 5 == 1)
 		h = (Elf_Half) (int_b0f[rand() % 3] >> 16); // 0x7fff || 0xffff || 0x8000
 	else if(r % 5 == 2)

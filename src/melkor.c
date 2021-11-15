@@ -54,6 +54,7 @@ Elf_Off		elfshstrtab_offset = 0, orcshstrtab_offset = 0, linkstrtab_offset = 0;
 Elf_Shdr	*orcOrigSHT;
 Elf_Phdr	*orcOrigPHT;
 Elf_Dyn		*elfOrigDYN;
+int PAGESIZE;
 
 extern int errno;
 
@@ -565,7 +566,11 @@ int main(int argc, char **argv)
 		}
 
 		// Reflect the changes in filesystem
+#ifdef __illumos__
+		if(msync(orcptr, elfstatinfo.st_size, MS_SYNC) == -1){
+#else
 		if(msync(orcptr, 0, MS_SYNC) == -1){
+#endif
 			perror("msync");
 			munmap(orcptr, elfstatinfo.st_size);
 			close(orcfd);
